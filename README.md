@@ -43,8 +43,11 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 
 每类响应 URL 只交给一个功能脚本处理，避免多个脚本重复读取同一响应体。
 
-### 注意事项
+### 注意事项与免责声明
 
+- 本插件及其 Egern 脚本主要由 AI 根据抓包元数据、公开规则和公开源码辅助分析并撰写，未经 RedNote 官方验证。
+- 不保证稳定性、准确性、兼容性或能够完全去除所有广告；可能出现漏拦截、误拦截、功能异常或随 App 更新失效。
+- 使用者应自行评估风险；因使用本插件产生的账号、网络、数据或 App 功能问题，作者与参考项目维护者不承担责任。
 - HTTPS 响应修改依赖 MITM；未安装或未信任证书时，脚本不会生效。
 - RedNote 的接口和字段可能随地区、账号或 App 版本变化。
 - 抓包文件只包含加密 TLS 元数据，不包含解密后的响应 JSON；国际版适配依据已确认域名、公开源码和回归测试完成。
@@ -106,8 +109,11 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 
 Each response URL is routed to one functional script only, preventing multiple scripts from consuming the same response body.
 
-### Notes
+### Notes and Disclaimer
 
+- This plugin and its Egern scripts were primarily written with AI assistance, based on packet metadata, public rules, and publicly available source code. They have not been verified by RedNote's official developers.
+- No guarantee is made regarding stability, accuracy, compatibility, or complete ad removal. The plugin may miss ads, remove legitimate content, break features, or stop working after an app update.
+- Users should evaluate the risks themselves. The author and the maintainers of the referenced projects are not responsible for account, network, data, or app-function issues caused by using this plugin.
 - HTTPS response modification requires MITM. Scripts will not work unless the Egern CA certificate is installed and trusted.
 - RedNote endpoints and response fields may vary by region, account, and app version.
 - The packet capture contains encrypted TLS metadata rather than decrypted response JSON. International adaptation is based on confirmed domains, reviewed public source code, and regression tests.
