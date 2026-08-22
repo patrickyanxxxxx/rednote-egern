@@ -21,6 +21,9 @@ rules:
       match: "t-ads.xiaohongshu.com"
       policy: REJECT
   - url_regex:
+      match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/stateReport(?:\\?|$)"
+      policy: REJECT
+  - url_regex:
       match: "^https?://(?:www\\.)?xhslink\\.com/o/"
       policy: REJECT
 
@@ -30,7 +33,12 @@ map_locals:
     headers:
       Content-Type: "application/json"
     body: "{}"
-  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/(?:guide|detailfeed/preload)|v\\d+/ads/resource|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/(?:guide|detailfeed/preload)|v\\d+/ads/resource|v\\d+/tag/ads_engage|v\\d+/ads/apple/record|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+  - match: "^https://(?:pages\\.)?(?:rnote|xiaohongshu)\\.com/data/native/matrix_switches(?:\\?|$)"
     status_code: 200
     headers:
       Content-Type: "application/json"
@@ -77,3 +85,7 @@ mitm:
       - "rec.xiaohongshu.com"
       - "www.xiaohongshu.com"
       - "so.xiaohongshu.com"
+      - "pages.rnote.com"
+      - "pages.xiaohongshu.com"
+      - "referee.rnote.com"
+      - "referee.xiaohongshu.com"

@@ -6,9 +6,13 @@ import note from './scripts/note.js';
 const run = (fn, url, body) => fn({ request: { url }, response: { json: async () => structuredClone(body) } });
 
 const feedOut = await run(feed, 'https://rec.rnote.com/api/sns/v6/homefeed?', {
-  data: [{ id: 1, ads_info: {} }, { id: 2, related_searches: ['x'], music_info: { id: 1 } }]
+  data: [
+    { id: 1, ads_info: {} },
+    { id: 2, related_searches: ['x'], music_info: { id: 1 } },
+    { id: 3, is_ads: true }
+  ]
 });
-if (feedOut.body.data.length !== 1 || feedOut.body.data[0].related_searches || feedOut.body.data[0].music_info) throw new Error('feed');
+if (feedOut.body.data.length !== 1 || feedOut.body.data[0].id !== 2 || feedOut.body.data[0].related_searches || feedOut.body.data[0].music_info) throw new Error('feed');
 
 const searchOut = await run(search, 'https://edith.rnote.com/api/sns/v4/search/trending?', {
   data: { queries: ['x'], hint_word: { text: 'x' } }

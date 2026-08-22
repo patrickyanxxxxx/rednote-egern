@@ -10,6 +10,7 @@ function isObject(value) {
 function isAd(item) {
   if (!isObject(item)) return false;
   if (item.ads_info || item.ad_info || item.advertisement_info || item.promotion_info) return true;
+  if (item.is_ads === true || item.is_ads === 1 || item.is_ads === "1") return true;
   const types = [item.model_type, item.card_type, item.item_type, item.type, item.display_type];
   if (types.some(v => typeof v === "string" && AD_MODELS.has(v.toLowerCase()))) return true;
   if ([item.is_ad, item.is_ads, item.is_sponsored, item.sponsored, item.promoted]

@@ -37,4 +37,4 @@ The packet capture used for adaptation contains encrypted TLS metadata rather th
 
 ## Credits
 
-Rule and endpoint research referenced public work from Kelee, RuCu6, and fmz200/wool_scripts. This repository contains an independent Egern-native implementation.
+Rule and endpoint research referenced public work from Kelee, RuCu6, fmz200/wool_scripts, and Moli-X/Resources. Source behavior reviewed and adapted includes `is_ads` feed filtering, splash expiry handling, system config cleanup, ad engagement/report endpoints, and native matrix switches. This repository contains an independent Egern-native implementation.
