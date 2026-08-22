@@ -1,0 +1,69 @@
+name: "RedNote 去广告"
+description: "适配 RedNote 国际版 9.44：清理开屏、信息流、搜索推广和界面广告；兼容小红书国内接口。"
+author: "Minis"
+homepage: "https://github.com/patrickyanxxxxx/rednote-egern"
+icon: "xmark.shield.fill"
+
+rules:
+  - domain:
+      match: "ads-img-al.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-img-qc.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-video-al.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-video-qc.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "t-ads.xiaohongshu.com"
+      policy: REJECT
+
+map_locals:
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v1/surprisebox/(?:get_style|open|submit_action)|marketing/box/trigger)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/(?:guide|detailfeed/preload)|v\\d+/ads/resource|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+
+body_rewrites:
+  - response_jq:
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/banner_list(?:\\?|$)"
+      filter: ".data = {}"
+  - response_jq:
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/hot_list(?:\\?|$)"
+      filter: ".data.items = []"
+  - response_jq:
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/hint(?:\\?|$)"
+      filter: ".data.hint_words = []"
+  - response_jq:
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/trending(?:\\?|$)"
+      filter: ".data.queries = [] | .data.hint_word = {}"
+
+scriptings:
+  - http_response:
+      name: "RedNote 广告净化"
+      match: "^https://(?:edith|rec|www|so)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns|marketing)/"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/rednote_remove_ads.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+
+mitm:
+  hostnames:
+    includes:
+      - "edith.rnote.com"
+      - "rec.rnote.com"
+      - "www.rnote.com"
+      - "so.rnote.com"
+      - "edith.xiaohongshu.com"
+      - "rec.xiaohongshu.com"
+      - "www.xiaohongshu.com"
+      - "so.xiaohongshu.com"
