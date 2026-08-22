@@ -36,4 +36,22 @@ const noteOut = await run(note, 'https://edith.rnote.com/api/sns/v2/note/feed?',
 const item = noteOut.body.data[0];
 if (item.music_info || item.media_save_config.disable_save || !item.media_save_config.disable_watermark) throw new Error('note');
 
+const videoFeedOut = await run(note, 'https://rec.rnote.com/api/sns/v4/note/videofeed?', {
+  data: [
+    { id: 'normal', model_type: 'note', related_ques: ['店铺'], music_info: { id: 1 } },
+    { id: 'live', model_type: 'live_v2' },
+    { id: 'ad', model_type: 'note', ad: { sponsor: true } },
+    { id: 'sponsored', model_type: 'note', ads_info: { label: 'Sponsored' } },
+    { id: 'shop', model_type: 'note', has_related_goods: true },
+    { id: 'other', model_type: 'recommend_user' }
+  ]
+});
+if (videoFeedOut.body.data.length !== 1 || videoFeedOut.body.data[0].id !== 'normal') throw new Error('videofeed filtering');
+if (videoFeedOut.body.data[0].related_ques || videoFeedOut.body.data[0].music_info) throw new Error('videofeed cleanup');
+
+const widgetOut = await run(system, 'https://edith.rnote.com/api/sns/v2/note/widgets', {
+  data: { widgets_nbb: [1], widgets_ncb: [1], widgets_ndb: [1], keep: true }
+});
+if (widgetOut.body.data.widgets_nbb || widgetOut.body.data.widgets_ncb || widgetOut.body.data.widgets_ndb || !widgetOut.body.data.keep) throw new Error('widgets');
+
 console.log('all script tests OK');

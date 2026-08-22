@@ -11,7 +11,7 @@ export default async function(ctx) {
     for (const key of [
       "splash", "splash_config", "loading_img", "ads_groups", "advertisements",
       "ad_list", "marketing", "promotion", "cooperate_binds", "generic",
-      "note_next_step", "widget_list"
+      "note_next_step", "widget_list", "widgets_nbb", "widgets_ncb", "widgets_ndb"
     ]) {
       delete root[key];
     }

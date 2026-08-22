@@ -23,6 +23,32 @@ function clean(node) {
   }
 }
 
+function isVideoFeedPromotion(item) {
+  if (!isObject(item)) return true;
+  if (item.model_type !== "note") return true;
+  if (Object.prototype.hasOwnProperty.call(item, "ad")) return true;
+  if (item.ads_info || item.ad_info || item.is_ads === true || item.is_ads === 1 || item.is_ads === "1") return true;
+  if (item.model_type === "live_v2") return true;
+  if (Object.prototype.hasOwnProperty.call(item, "card_icon")) return true;
+  if (Array.isArray(item.note_attributes) && item.note_attributes.includes("goods")) return true;
+  return item.has_related_goods === true;
+}
+
+function cleanVideoFeed(data, version) {
+  if (!Array.isArray(data?.data)) return;
+  if (version === 4) {
+    data.data = data.data.filter(item => !isVideoFeedPromotion(item));
+  } else {
+    data.data = data.data.filter(item => {
+      if (!isObject(item)) return false;
+      if (item.model_type === "live_v2") return false;
+      if (Object.prototype.hasOwnProperty.call(item, "ad")) return false;
+      if (item.ads_info || item.ad_info || item.is_ads === true || item.is_ads === 1 || item.is_ads === "1") return false;
+      return true;
+    });
+  }
+}
+
 function unlockMedia(node) {
   if (!isObject(node)) return;
   if (isObject(node.media_save_config)) {
@@ -52,9 +78,12 @@ function unlockMedia(node) {
 }
 
 export default async function(ctx) {
+  const url = ctx.request?.url || "";
   try {
     const data = await ctx.response.json();
     clean(data);
+    if (/\/v3\/note\/videofeed(?:\?|$)/.test(url)) cleanVideoFeed(data, 3);
+    if (/\/v4\/note\/videofeed(?:\?|$)/.test(url)) cleanVideoFeed(data, 4);
     unlockMedia(data);
     return { body: data };
   } catch (_) {

@@ -68,7 +68,7 @@ scriptings:
       timeout: 10
   - http_response:
       name: "笔记和评论内容净化"
-      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed|feed|imagefeed|videofeed|comment)|interaction/comment)"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed|feed|imagefeed|videofeed|live_photo/save|comment)|interaction/comment)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note.js"
       body_required: true
       max_size: 8388608
