@@ -36,6 +36,12 @@ const noteOut = await run(note, 'https://edith.rnote.com/api/sns/v2/note/feed?',
 const item = noteOut.body.data[0];
 if (item.music_info || item.media_save_config.disable_save || !item.media_save_config.disable_watermark) throw new Error('note');
 
+const commentOut = await run(note, 'https://edith.rnote.com/api/sns/v5/note/comment/list?', {
+  data: { comments: [{ audio_info: { audio_url: 'https://example.test/voice.m4a' }, music_info: { id: 1 } }] }
+});
+const comment = commentOut.body.data.comments[0];
+if (!comment.audio_info || comment.music_info) throw new Error('comment audio');
+
 const videoFeedOut = await run(note, 'https://rec.rnote.com/api/sns/v4/note/videofeed?', {
   data: [
     { id: 'normal', model_type: 'note', related_ques: ['店铺'], music_info: { id: 1 } },

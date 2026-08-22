@@ -10,7 +10,7 @@ function clean(node) {
     "recommend_search", "recommend_searches", "music", "music_info",
     "music_info_v2", "music_info_list", "note_music", "native_music",
     "native_music_info", "music_id", "music_name", "music_url", "music_track",
-    "music_track_info", "audio_info"
+    "music_track_info"
   ]);
   for (const key of Object.keys(node)) {
     if (removeKeys.has(key)) {
