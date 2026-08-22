@@ -21,10 +21,15 @@ Add this URL in Egern as a remote module, enable MITM, and make sure the Egern C
 - Blocks `xhslink.com/o/...` share short links
 - Uses conservative ad detection to avoid deleting ordinary shopping notes
 
-## Files
+## Script layout
 
-- `RedNote_Remove_Ads.yaml`: Egern remote module
-- `rednote_remove_ads.js`: native Egern `ctx` response script
+- `RedNote_Remove_Ads.yaml`: Egern remote module and URL routing
+- `scripts/feed_ads.js`: feed ads, related search, and native music cleanup
+- `scripts/search.js`: search banners, hot list, hints, trending, and promoted results
+- `scripts/system.js`: splash ads, system UI, and widget cleanup
+- `scripts/note.js`: note and comment related-search and native-music cleanup
+
+Each response URL is routed to one functional script only, so a failure in one area does not affect the others.
 
 ## Notes
 

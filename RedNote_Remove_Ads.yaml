@@ -36,25 +36,32 @@ map_locals:
       Content-Type: "application/json"
     body: "{}"
 
-body_rewrites:
-  - response_jq:
-      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/banner_list(?:\\?|$)"
-      filter: ".data = {}"
-  - response_jq:
-      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/hot_list(?:\\?|$)"
-      filter: ".data.items = []"
-  - response_jq:
-      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/hint(?:\\?|$)"
-      filter: ".data.hint_words = []"
-  - response_jq:
-      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/trending(?:\\?|$)"
-      filter: ".data.queries = [] | .data.hint_word = {}"
-
 scriptings:
   - http_response:
-      name: "RedNote 广告净化"
-      match: "^https://(?:edith|rec|www|so)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns|marketing)/"
-      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/rednote_remove_ads.js"
+      name: "信息流广告、相关搜索和音乐净化"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+  - http_response:
+      name: "搜索页净化"
+      match: "^https://(?:edith|so)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/search.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+  - http_response:
+      name: "开屏和界面配置净化"
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:system(?:_service)?/|note/widgets)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/system.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+  - http_response:
+      name: "笔记和评论内容净化"
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed|feed|imagefeed|videofeed|comment)|interaction/comment)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note.js"
       body_required: true
       max_size: 8388608
       timeout: 10
