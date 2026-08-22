@@ -63,6 +63,42 @@ function cleanUi(data) {
   }
 }
 
+function cleanRelatedSearch(node) {
+  if (!isObject(node)) return;
+  const relatedKeys = new Set([
+    "related_ques", "related_questions", "related_search", "related_searches",
+    "related_queries", "related_query", "search_recommend", "search_recommendations",
+    "recommend_search", "recommend_searches"
+  ]);
+  for (const key of Object.keys(node)) {
+    if (relatedKeys.has(key)) {
+      delete node[key];
+    } else if (Array.isArray(node[key])) {
+      for (const item of node[key]) cleanRelatedSearch(item);
+    } else if (isObject(node[key])) {
+      cleanRelatedSearch(node[key]);
+    }
+  }
+}
+
+function cleanNativeMusic(node) {
+  if (!isObject(node)) return;
+  const musicKeys = new Set([
+    "music", "music_info", "music_info_v2", "music_info_list", "note_music",
+    "native_music", "native_music_info", "music_id", "music_name", "music_url",
+    "music_track", "music_track_info", "audio_info"
+  ]);
+  for (const key of Object.keys(node)) {
+    if (musicKeys.has(key)) {
+      delete node[key];
+    } else if (Array.isArray(node[key])) {
+      for (const item of node[key]) cleanNativeMusic(item);
+    } else if (isObject(node[key])) {
+      cleanNativeMusic(node[key]);
+    }
+  }
+}
+
 export default async function(ctx) {
   const url = ctx.request?.url || "";
   let data;
@@ -92,5 +128,7 @@ export default async function(ctx) {
   // Feed schemas vary between RedNote regions and app releases. Remove only
   // entries carrying explicit advertising markers, including nested lists.
   cleanArrays(data);
+  cleanRelatedSearch(data);
+  cleanNativeMusic(data);
   return { body: data };
 }

@@ -20,6 +20,9 @@ rules:
   - domain:
       match: "t-ads.xiaohongshu.com"
       policy: REJECT
+  - url_regex:
+      match: "^https?://(?:www\\.)?xhslink\\.com/o/"
+      policy: REJECT
 
 map_locals:
   - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v1/surprisebox/(?:get_style|open|submit_action)|marketing/box/trigger)(?:\\?|$)"

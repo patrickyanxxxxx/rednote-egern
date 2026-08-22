@@ -17,6 +17,8 @@ Add this URL in Egern as a remote module, enable MITM, and make sure the Egern C
 - Clears search banners, hot lists, hints, and trending suggestions
 - Rejects dedicated Xiaohongshu advertising media domains
 - Supports RedNote `rnote.com` endpoints and compatible `xiaohongshu.com` endpoints
+- Removes related-search fields and native music metadata
+- Blocks `xhslink.com/o/...` share short links
 - Uses conservative ad detection to avoid deleting ordinary shopping notes
 
 ## Files
