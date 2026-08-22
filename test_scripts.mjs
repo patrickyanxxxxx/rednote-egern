@@ -9,10 +9,16 @@ const feedOut = await run(feed, 'https://rec.rnote.com/api/sns/v6/homefeed?', {
   data: [
     { id: 1, ads_info: {} },
     { id: 2, related_searches: ['x'], music_info: { id: 1 } },
-    { id: 3, is_ads: true }
+    { id: 3, is_ads: true },
+    { id: 4, model_type: 'live_v2' },
+    { id: 5, card_icon: 'shop' },
+    { id: 6, note_attributes: ['goods'] },
+    { id: 7, has_related_goods: true },
+    { id: 8, note_attributes: ['普通标签'] }
   ]
 });
-if (feedOut.body.data.length !== 1 || feedOut.body.data[0].id !== 2 || feedOut.body.data[0].related_searches || feedOut.body.data[0].music_info) throw new Error('feed');
+if (feedOut.body.data.length !== 2 || !feedOut.body.data.some(item => item.id === 2) || !feedOut.body.data.some(item => item.id === 8)) throw new Error('feed');
+if (feedOut.body.data.some(item => [1, 3, 4, 5, 6, 7].includes(item.id))) throw new Error('homefeed promotions');
 
 const searchOut = await run(search, 'https://edith.rnote.com/api/sns/v4/search/trending?', {
   data: { queries: ['x'], hint_word: { text: 'x' } }

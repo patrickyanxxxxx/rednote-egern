@@ -19,6 +19,15 @@ function isAd(item) {
   return /(^|[_-])(ad|ads|sponsor|commercial|promotion)([_-]|$)/.test(reason);
 }
 
+function isHomefeedPromotion(item) {
+  if (!isObject(item)) return false;
+  if (item.model_type === "live_v2") return true;
+  if (Object.prototype.hasOwnProperty.call(item, "ads_info")) return true;
+  if (Object.prototype.hasOwnProperty.call(item, "card_icon")) return true;
+  if (Array.isArray(item.note_attributes) && item.note_attributes.includes("goods")) return true;
+  return item.has_related_goods === true;
+}
+
 function clean(node) {
   if (!isObject(node)) return;
   const removeKeys = new Set([
@@ -44,6 +53,10 @@ export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     clean(data);
+
+    if (/\/v6\/homefeed(?:\?|$)/.test(url) && Array.isArray(data?.data)) {
+      data.data = data.data.filter(item => !isHomefeedPromotion(item));
+    }
 
     if (/\/user\/followings\/followfeed(?:\?|$)/.test(url) && Array.isArray(data?.data?.items)) {
       data.data.items = data.data.items.filter(item => item?.recommend_reason === "friend_post");
