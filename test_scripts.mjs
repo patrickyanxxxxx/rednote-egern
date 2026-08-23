@@ -2,6 +2,7 @@ import feed from './scripts/feed_ads.js';
 import search from './scripts/search.js';
 import system from './scripts/system.js';
 import note from './scripts/note.js';
+import messages from './scripts/messages.js';
 
 const run = (fn, url, body) => fn({ request: { url }, response: { json: async () => structuredClone(body) } });
 
@@ -59,5 +60,18 @@ const widgetOut = await run(system, 'https://edith.rnote.com/api/sns/v2/note/wid
   data: { widgets_nbb: [1], widgets_ncb: [1], widgets_ndb: [1], keep: true }
 });
 if (widgetOut.body.data.widgets_nbb || widgetOut.body.data.widgets_ncb || widgetOut.body.data.widgets_ndb || !widgetOut.body.data.keep) throw new Error('widgets');
+
+const messagesOut = await run(messages, 'https://lng.rnote.com/api/sns/v1/messages/list', {
+  data: {
+    conversations: [
+      { id: 'chat', type: 'conversation', last_message: { text: 'hello' }, audio_info: { url: 'voice.m4a' } },
+      { id: 'recommended', model_type: 'recommend_user', user_id: 'u1' },
+      { id: 'suggested', title: '可能感兴趣的人', users: [{ id: 'u2' }] }
+    ],
+    recommend_users: [{ id: 'u3' }]
+  }
+});
+if (messagesOut.body.data.conversations.length !== 1 || messagesOut.body.data.conversations[0].id !== 'chat') throw new Error('message recommendations');
+if (messagesOut.body.data.recommend_users || !messagesOut.body.data.conversations[0].audio_info) throw new Error('message preservation');
 
 console.log('all script tests OK');

@@ -73,6 +73,13 @@ scriptings:
       body_required: true
       max_size: 8388608
       timeout: 10
+  - http_response:
+      name: "私信页推荐用户净化"
+      match: "^https://(?:edith|lng|www)\\.(?:rnote|xiaohongshu)\\.com/(?:api/(?:sns/)?v?\\d*/?)?(?:message|messages|chat|im|inbox|conversation|conversations)(?:/|\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/messages.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
 
 mitm:
   hostnames:
@@ -81,10 +88,12 @@ mitm:
       - "rec.rnote.com"
       - "www.rnote.com"
       - "so.rnote.com"
+      - "lng.rnote.com"
       - "edith.xiaohongshu.com"
       - "rec.xiaohongshu.com"
       - "www.xiaohongshu.com"
       - "so.xiaohongshu.com"
+      - "lng.xiaohongshu.com"
       - "pages.rnote.com"
       - "pages.xiaohongshu.com"
       - "referee.rnote.com"
