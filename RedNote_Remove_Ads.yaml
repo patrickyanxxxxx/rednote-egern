@@ -33,7 +33,7 @@ map_locals:
     headers:
       Content-Type: "application/json"
     body: "{}"
-  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/(?:guide|detailfeed/preload)|v\\d+/ads/resource|v\\d+/tag/ads_engage|v\\d+/ads/apple/record|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/guide|v\\d+/ads/resource|v\\d+/tag/ads_engage|v\\d+/ads/apple/record|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
     status_code: 200
     headers:
       Content-Type: "application/json"
@@ -68,7 +68,7 @@ scriptings:
       timeout: 10
   - http_response:
       name: "笔记和评论内容净化"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed|feed|imagefeed|videofeed|live_photo/save|comment)|interaction/comment)"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed(?:\\?|$)|feed(?:\\?|$)|imagefeed(?:\\?|$)|videofeed(?:\\?|$)|live_photo/save(?:\\?|$)|comment(?:/|\\?|$))|interaction/comment(?:/|\\?|$))"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note.js"
       body_required: true
       max_size: 8388608
