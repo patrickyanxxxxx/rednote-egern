@@ -1,42 +1,46 @@
-const REMOVE_KEYS = new Set([
-  "note_next_step", "widget_list", "widgets_nbb", "widgets_ncb", "widgets_ndb",
-  "widgets", "widget", "hot_list", "hot_topics", "hot_queries", "hot_words",
-  "activity", "activities", "activity_info", "activity_list", "poi", "poi_info",
-  "poi_info_list", "location", "location_info", "place", "place_info",
-  "related_search", "related_searches", "related_ques", "related_questions",
-  "recommend_search", "search_recommend"
+const REMOVE_BIZ_TYPES = new Set([
+  "nbb_strategy_related_search",
+  "nbb_related_hotspot",
+  "note_activity_component",
+  "ndb_poi",
+  "poi",
+  "ugc_buyable_poi",
+  "ndb_sound",
+  "ndb_music",
+  "note_collection"
 ]);
-
-const COMPONENT_TEXT = /(?:related|recommend|search|question|query|hot|trending|activity|campaign|poi|location|place|合集|相关|搜索|热点|热搜|活动|地点)/i;
 
 function isObject(value) {
   return value !== null && typeof value === "object";
 }
 
-function isComponent(value) {
-  if (!isObject(value) || Array.isArray(value)) return false;
-  const fields = [
-    value.type, value.model_type, value.card_type, value.item_type,
-    value.widget_type, value.module_type, value.block_type, value.title,
-    value.name, value.label, value.text, value.reason
-  ];
-  return fields.some(field => typeof field === "string" && COMPONENT_TEXT.test(field));
+function isRemovable(value) {
+  return isObject(value) && REMOVE_BIZ_TYPES.has(value.biz_type);
 }
 
 function clean(node, depth = 0) {
-  if (!isObject(node) || depth > 4) return;
+  if (!isObject(node) || depth > 5) return;
   if (Array.isArray(node)) {
     for (let i = node.length - 1; i >= 0; i--) {
-      if (isComponent(node[i])) node.splice(i, 1);
+      if (isRemovable(node[i])) node.splice(i, 1);
       else clean(node[i], depth);
     }
     return;
   }
+
+  if (isObject(node.generic)) delete node.generic.pin_search_highlights;
+
   for (const key of Object.keys(node)) {
-    if (REMOVE_KEYS.has(key) || COMPONENT_TEXT.test(key)) {
-      delete node[key];
-    } else if (isObject(node[key])) {
+    const value = node[key];
+    if (key === "generic" && isObject(value)) {
+      delete value.pin_search_highlights;
+    } else if (key === "widget_list" && Array.isArray(value)) {
+      node[key] = value.filter(item => !isRemovable(item));
       clean(node[key], depth + 1);
+    } else if ((key === "widgets_nbb" || key === "widgets_ncb" || key === "widgets_ndb") && isRemovable(value)) {
+      delete node[key];
+    } else if (isObject(value)) {
+      clean(value, depth + 1);
     }
   }
 }

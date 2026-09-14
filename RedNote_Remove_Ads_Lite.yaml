@@ -43,6 +43,11 @@ map_locals:
     headers:
       Content-Type: "application/json"
     body: "{}"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/content/video/get_ads_info(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
 
 scriptings:
   - http_response:
