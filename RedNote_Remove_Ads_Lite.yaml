@@ -54,7 +54,7 @@ scriptings:
       timeout: 10
   - http_response:
       name: "视频流广告净化"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v(?:3|4)/note/videofeed(?:\\?|$)"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/videofeed(?:\\?|$)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/videofeed_ads_lite.js"
       body_required: true
       max_size: 8388608

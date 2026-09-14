@@ -5,10 +5,16 @@ const AD_MODELS = new Set([
 
 const REMOVE_KEYS = [
   "related_ques", "related_questions", "related_search", "related_searches",
-  "related_queries", "search_recommend", "recommend_search", "music",
-  "music_info", "music_info_v2", "note_music", "native_music",
-  "native_music_info", "music_track", "audio_info"
+  "related_queries", "related_query", "search_recommend", "recommend_search",
+  "music", "music_info", "music_info_v2", "note_music", "native_music",
+  "native_music_info", "music_track", "audio_info", "poi", "poi_info",
+  "poi_info_list", "location", "location_info", "place", "place_info",
+  "address_info", "geo_info", "collection", "collection_info",
+  "note_collection", "note_collection_info", "collect_info", "series",
+  "series_info", "album", "album_info"
 ];
+
+const DISPLAY_KEY = /(?:related|recommend).*(?:search|question|query)|(?:search|question|query).*(?:related|recommend)|(?:^|_)(?:music|audio|poi|location|place|address|geo|collection|collect|series|album)(?:_|$)/i;
 
 function isObject(value) {
   return value !== null && typeof value === "object";
@@ -38,9 +44,36 @@ function isHomefeedPromotion(item) {
     item.has_related_goods === true;
 }
 
-function cleanItem(item) {
-  if (!isObject(item)) return;
-  for (const key of REMOVE_KEYS) delete item[key];
+function enableSaving(node) {
+  if (isObject(node.media_save_config)) {
+    node.media_save_config.disable_save = false;
+    node.media_save_config.disable_watermark = true;
+    node.media_save_config.disable_weibo_cover = true;
+  }
+  if (Array.isArray(node.function_switch)) {
+    for (const item of node.function_switch) {
+      if (item?.type === "image_download" || item?.type === "video_download") {
+        item.enable = true;
+        delete item.reason;
+      }
+    }
+  }
+}
+
+function cleanItem(node, depth = 0) {
+  if (!isObject(node) || depth > 4) return;
+  if (Array.isArray(node)) {
+    for (const item of node) cleanItem(item, depth);
+    return;
+  }
+  enableSaving(node);
+  for (const key of Object.keys(node)) {
+    if (REMOVE_KEYS.includes(key) || DISPLAY_KEY.test(key)) {
+      delete node[key];
+    } else if (isObject(node[key])) {
+      cleanItem(node[key], depth + 1);
+    }
+  }
 }
 
 function cleanArray(items, homefeed) {

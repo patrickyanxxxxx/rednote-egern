@@ -1,3 +1,5 @@
+const REMOVE_KEY = /(?:related[_-]?(?:ques|question|search|query)|music|(?:^|_)(?:poi|location|place|address|geo)(?:_|$)|collection|series|album)/i;
+
 function isObject(value) {
   return value !== null && typeof value === "object";
 }
@@ -16,10 +18,43 @@ function isPromotion(item) {
   return item.has_related_goods === true;
 }
 
+function enableSaving(node) {
+  if (isObject(node.media_save_config)) {
+    node.media_save_config.disable_save = false;
+    node.media_save_config.disable_watermark = true;
+    node.media_save_config.disable_weibo_cover = true;
+  }
+  if (Array.isArray(node.function_switch)) {
+    for (const item of node.function_switch) {
+      if (item?.type === "image_download" || item?.type === "video_download") {
+        item.enable = true;
+        delete item.reason;
+      }
+    }
+  }
+}
+
+function cleanDisplay(node, depth) {
+  if (!isObject(node) || depth > 4) return;
+  if (Array.isArray(node)) {
+    for (const item of node) cleanDisplay(item, depth);
+    return;
+  }
+  enableSaving(node);
+  for (const key of Object.keys(node)) {
+    if (REMOVE_KEY.test(key)) {
+      delete node[key];
+    } else if (isObject(node[key])) {
+      cleanDisplay(node[key], depth + 1);
+    }
+  }
+}
+
 export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     if (Array.isArray(data?.data)) data.data = data.data.filter(item => !isPromotion(item));
+    cleanDisplay(data, 0);
     return { body: data };
   } catch (_) {
     return;

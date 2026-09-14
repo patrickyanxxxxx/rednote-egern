@@ -5,25 +5,13 @@ const REMOVE_KEYS = new Set([
   "music_info_v2", "music_info_list", "note_music", "native_music",
   "native_music_info", "music_id", "music_name", "music_url", "music_track",
   "music_track_info", "poi_info", "poi_info_list", "location_info", "location",
-  "place_info", "place", "address_info", "collection_info", "note_collection",
-  "note_collection_info", "collection", "series_info", "series", "album_info", "album"
-]);
-
-const CHILD_KEYS = new Set([
-  "data", "note", "note_card", "note_info", "items", "notes", "cards",
-  "feeds", "feed", "result", "results"
+  "place_info", "place", "address_info", "poi", "coordinates", "geo_info",
+  "collection_info", "note_collection", "note_collection_info", "collection",
+  "series_info", "series", "album_info", "album"
 ]);
 
 function isObject(value) {
   return value !== null && typeof value === "object";
-}
-
-function looksLikeNote(node) {
-  if (!isObject(node)) return false;
-  return node.model_type === "note" || node.note_id !== undefined ||
-    node.note_card !== undefined || node.note_info !== undefined ||
-    node.image_list !== undefined || node.video !== undefined ||
-    node.video_info !== undefined;
 }
 
 function enableSaving(node) {
@@ -40,32 +28,24 @@ function enableSaving(node) {
       }
     }
   }
-  if (Array.isArray(node.share_info?.function_entries) &&
+  if (isObject(node.share_info) && Array.isArray(node.share_info.function_entries) &&
       !node.share_info.function_entries.some(item => item?.type === "video_download")) {
     node.share_info.function_entries.push({ type: "video_download" });
   }
 }
 
-function cleanNote(node) {
-  if (!looksLikeNote(node)) return;
-  for (const key of REMOVE_KEYS) delete node[key];
-  enableSaving(node);
-}
-
-function walkKnown(node, depth) {
-  if (!isObject(node) || depth > 3) return;
+function clean(node, depth) {
+  if (!isObject(node) || depth > 5) return;
   if (Array.isArray(node)) {
-    for (const item of node) walkKnown(item, depth);
+    for (const item of node) clean(item, depth);
     return;
   }
-  cleanNote(node);
+  enableSaving(node);
   for (const key of Object.keys(node)) {
-    if (!CHILD_KEYS.has(key)) continue;
-    const value = node[key];
-    if (Array.isArray(value)) {
-      for (const item of value) walkKnown(item, depth + 1);
-    } else if (isObject(value)) {
-      walkKnown(value, depth + 1);
+    if (REMOVE_KEYS.has(key)) {
+      delete node[key];
+    } else if (isObject(node[key])) {
+      clean(node[key], depth + 1);
     }
   }
 }
@@ -73,7 +53,7 @@ function walkKnown(node, depth) {
 export default async function(ctx) {
   try {
     const data = await ctx.response.json();
-    walkKnown(data, 0);
+    clean(data, 0);
     return { body: data };
   } catch (_) {
     return;
