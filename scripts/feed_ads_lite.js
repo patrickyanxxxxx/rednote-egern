@@ -16,6 +16,10 @@ const REMOVE_KEYS = [
 
 const DISPLAY_KEY = /(?:related|recommend).*(?:search|question|query)|(?:search|question|query).*(?:related|recommend)|(?:^|_)(?:music|audio|poi|location|place|address|geo|collection|collect|series|album)(?:_|$)/i;
 
+function shouldRemoveDisplayKey(key) {
+  return !/^ip_location(?:_|$)/i.test(key) && DISPLAY_KEY.test(key);
+}
+
 function isObject(value) {
   return value !== null && typeof value === "object";
 }
@@ -68,7 +72,7 @@ function cleanItem(node, depth = 0) {
   }
   enableSaving(node);
   for (const key of Object.keys(node)) {
-    if (REMOVE_KEYS.includes(key) || DISPLAY_KEY.test(key)) {
+    if (REMOVE_KEYS.includes(key) || shouldRemoveDisplayKey(key)) {
       delete node[key];
     } else if (isObject(node[key])) {
       cleanItem(node[key], depth + 1);

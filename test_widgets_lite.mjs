@@ -28,7 +28,7 @@ const data = out.body.data;
 if ('widgets_nbb' in data || 'widgets_ndb' in data) throw new Error('root widgets');
 if (!Array.isArray(data.widget_list) || data.widget_list.length !== 1 ||
     data.widget_list[0].biz_type !== 'normal_component') throw new Error('widget list');
-if (data.generic.pin_search_highlights || !data.generic.keep) throw new Error('generic');
+if (data.generic?.pin_search_highlights || !data.generic?.keep) throw new Error('generic');
 if (data.nested.items.length !== 1 || data.nested.items[0].biz_type !== 'normal_component') throw new Error('nested widgets');
 if (!data.keep) throw new Error('keep');
 console.log('widgets lite tests OK');

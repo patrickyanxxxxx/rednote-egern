@@ -1,5 +1,9 @@
 const REMOVE_KEY = /(?:related[_-]?(?:ques|question|search|query)|music|(?:^|_)(?:poi|location|place|address|geo)(?:_|$)|collection|series|album)/i;
 
+function shouldRemoveDisplayKey(key) {
+  return !/^ip_location(?:_|$)/i.test(key) && REMOVE_KEY.test(key);
+}
+
 function isObject(value) {
   return value !== null && typeof value === "object";
 }
@@ -42,7 +46,7 @@ function cleanDisplay(node, depth) {
   }
   enableSaving(node);
   for (const key of Object.keys(node)) {
-    if (REMOVE_KEY.test(key)) {
+    if (shouldRemoveDisplayKey(key)) {
       delete node[key];
     } else if (isObject(node[key])) {
       cleanDisplay(node[key], depth + 1);
