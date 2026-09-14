@@ -1,0 +1,86 @@
+name: "RedNote 去广告 Lite"
+description: "RedNote 国际版轻量去广告：保留明确广告拦截、首页/关注流和视频流广告过滤，绕过详情、评论、图片和私信响应改写。"
+author: "Minis"
+homepage: "https://github.com/patrickyanxxxxx/rednote-egern"
+icon: "xmark.shield.fill"
+
+rules:
+  - domain:
+      match: "ads-img-al.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-img-qc.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-video-al.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-video-qc.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "t-ads.xiaohongshu.com"
+      policy: REJECT
+  - url_regex:
+      match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/stateReport(?:\\?|$)"
+      policy: REJECT
+  - url_regex:
+      match: "^https?://(?:www\\.)?xhslink\\.com/o/"
+      policy: REJECT
+
+map_locals:
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v1/surprisebox/(?:get_style|open|submit_action)|marketing/box/trigger)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/(?:v\\d+/guide/user_banner|v\\d+/note/guide|v\\d+/ads/resource|v\\d+/tag/ads_engage|v\\d+/ads/apple/record|v\\d+/hey/[^/]+/hey_gallery)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+  - match: "^https://(?:pages\\.)?(?:rnote|xiaohongshu)\\.com/data/native/matrix_switches(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: "{}"
+
+scriptings:
+  - http_response:
+      name: "首页和关注流广告净化"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads_lite.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+  - http_response:
+      name: "视频流广告净化"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v(?:3|4)/note/videofeed(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/videofeed_ads_lite.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+  - http_response:
+      name: "搜索广告组件净化"
+      match: "^https://(?:edith|so|search)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/search_ads_lite.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+
+mitm:
+  hostnames:
+    includes:
+      - "edith.rnote.com"
+      - "rec.rnote.com"
+      - "www.rnote.com"
+      - "so.rnote.com"
+      - "search.rnote.com"
+      - "edith.xiaohongshu.com"
+      - "rec.xiaohongshu.com"
+      - "www.xiaohongshu.com"
+      - "so.xiaohongshu.com"
+      - "search.xiaohongshu.com"
+      - "pages.rnote.com"
+      - "pages.xiaohongshu.com"
+      - "referee.rnote.com"
+      - "referee.xiaohongshu.com"
