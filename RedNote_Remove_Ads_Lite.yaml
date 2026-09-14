@@ -68,7 +68,7 @@ scriptings:
       timeout: 10
   - http_response:
       name: "笔记组件净化"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/widgets(?:\\?|$)"
+      match: "^https://(?:edith|rec|www|pages)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/widgets(?:\\?|$)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/widgets_lite.js"
       body_required: true
       max_size: 1048576
