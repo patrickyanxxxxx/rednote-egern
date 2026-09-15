@@ -1,4 +1,4 @@
-import widgets from './scripts/widgets_lite.js';
+import widgets from './scripts/widgets_lite_v2.js';
 
 const out = await widgets({
   request: { url: 'https://edith.rnote.com/api/sns/v8/note/widgets?' },
@@ -10,9 +10,10 @@ const out = await widgets({
         { biz_type: 'poi', model: { title: '地点' } },
         { biz_type: 'note_activity_component', model: { title: '活动' } },
         { biz_type: 'note_collection', model: { title: '合集' } },
+        { biz_type: 'ndb_group_chat', model: { title: '加入粉丝群' } },
         { biz_type: 'normal_component', model: { title: '普通组件' } }
       ],
-      generic: { pin_search_highlights: { name: '热点' }, keep: true },
+      generic: { pin_search_highlights: { name: '猜你想搜' }, keep: true },
       nested: {
         items: [
           { biz_type: 'nbb_related_hotspot', model: { title: '热点' } },
