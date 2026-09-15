@@ -1,5 +1,5 @@
 import feed from './scripts/feed_ads_lite.js';
-import video from './scripts/videofeed_ads_lite.js';
+import video from './scripts/videofeed_ads_fast.js';
 import search from './scripts/search_ads_lite.js';
 const run = (fn, url, body) => fn({ request: { url }, response: { json: async () => structuredClone(body) } });
 const feedOut = await run(feed, 'https://rec.rnote.com/api/sns/v6/homefeed?', {
