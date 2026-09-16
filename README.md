@@ -1,5 +1,9 @@
 # RedNote Egern 去广告模块
 
+**最新发行版：v2026.09.16**
+
+当前推荐组合：`RedNote_Remove_Ads_Lite.yaml` + 图片 CDN 直连规则。Lite 版保留去广告、视频快路径、组件净化、去水印和 IP 属地，避免对评论与图片响应做重型改写。
+
 [中文](#中文说明) | [English](#english)
 
 ## 中文说明
@@ -8,9 +12,19 @@
 
 ### 远程模块地址
 
+**推荐：Lite 最新版**
+
+```text
+https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads_Lite.yaml
+```
+
+兼容旧版完整版：
+
 ```text
 https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads.yaml
 ```
+
+当前发行版：`v2026.09.16`
 
 ### 安装方法
 
@@ -19,6 +33,16 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 3. 开启 Egern MITM。
 4. 安装并信任 Egern CA 证书。
 5. 更新模块后，彻底关闭 RedNote 再重新打开。
+
+### 推荐分流配合
+
+图片/头像 CDN 直连规则：
+
+```text
+https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rules/main/REDnote-Image-DIRECT.yaml
+```
+
+将它放在 `REDnote-Global.yaml` 之前；视频 CDN `sns-v27.rednotecdn.com` 不在图片直连规则中，继续使用原视频策略。
 
 ### 主要功能
 
@@ -33,15 +57,16 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 - 拦截 `xhslink.com/o/...` 类型的帖子分享短链
 - 同时兼容 RedNote `rnote.com` 和小红书 `xiaohongshu.com` 接口
 
-### 脚本结构
+### 当前 Lite 版脚本结构
 
-- `RedNote_Remove_Ads.yaml`：Egern 远程模块、规则和 URL 路由
-- `scripts/feed_ads.js`：首页信息流广告、直播、推荐用户、相关搜索和音乐清理
-- `scripts/search.js`：搜索横幅、热搜、提示词、趋势词和推广结果清理
-- `scripts/system.js`：开屏广告、系统配置、界面推广和详情页组件清理
-- `scripts/note.js`：详情视频流、笔记、评论、相关搜索、音乐及保存权限处理
+- `RedNote_Remove_Ads_Lite.yaml`：推荐的轻量模块
+- `scripts/feed_ads_lite.js`：首页和关注流广告净化，保留帖子 IP 属地
+- `scripts/videofeed_ads_fast.js`：视频流顶层快路径，保留去水印和广告过滤
+- `scripts/note_display_lite.js`：笔记展示字段和保存/去水印处理
+- `scripts/widgets_lite_v2.js`：相关搜索、热点、活动、地点、音乐、合集和粉丝群组件净化
+- `scripts/search_ads_lite.js`：搜索广告组件净化
 
-每类响应 URL 只交给一个功能脚本处理，避免多个脚本重复读取同一响应体。
+Lite 版绕过评论、图片和私信的重型响应改写，避免刷一段时间后内容和评论请求失效。视频流只处理每条视频的顶层字段，减少切换视频时的额外响应处理。
 
 ### 注意事项与免责声明
 
@@ -70,12 +95,28 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 
 ## English
 
-An Egern module for removing ads and cleaning interface elements in RedNote, the international version of Xiaohongshu. The module was adapted from RedNote 9.44 network metadata and reviewed behavior from several public Xiaohongshu ad-blocking projects.
+**Latest release: `v2026.09.16`**
+
+The recommended release is the Lite module. It keeps ad cleanup, the shallow video-feed fast path, widget cleanup, watermark controls, and post IP-location fields while avoiding heavy comment and image response rewriting.
 
 ### Remote Module URL
 
+Recommended Lite module:
+
+```text
+https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads_Lite.yaml
+```
+
+Legacy complete module:
+
 ```text
 https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads.yaml
+```
+
+Image/avatar CDN direct-route companion:
+
+```text
+https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rules/main/REDnote-Image-DIRECT.yaml
 ```
 
 ### Installation
@@ -85,6 +126,7 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 3. Enable MITM in Egern.
 4. Install and trust the Egern CA certificate.
 5. After updating the module, fully close and reopen RedNote.
+6. If using the image direct-route companion, place it before the broad `REDnote-Global.yaml` rule set. Keep `sns-v27.rednotecdn.com` on the existing video policy.
 
 ### Features
 
@@ -99,15 +141,16 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 - Blocks post share links matching `xhslink.com/o/...`
 - Supports both RedNote `rnote.com` and compatible Xiaohongshu `xiaohongshu.com` endpoints
 
-### Script Layout
+### Lite Script Layout
 
-- `RedNote_Remove_Ads.yaml`: Egern remote module, rules, and URL routing
-- `scripts/feed_ads.js`: home-feed ads, live streams, recommended users, related searches, and music cleanup
-- `scripts/search.js`: search banners, hot lists, hints, trending terms, and promoted-result cleanup
-- `scripts/system.js`: splash ads, system configuration, UI promotions, and detail-widget cleanup
-- `scripts/note.js`: detail video feeds, notes, comments, related searches, music, and save permissions
+- `RedNote_Remove_Ads_Lite.yaml`: recommended Lite module
+- `scripts/feed_ads_lite.js`: home/follow-feed ad cleanup while preserving post IP locations
+- `scripts/videofeed_ads_fast.js`: shallow video-feed fast path with ad and watermark handling
+- `scripts/note_display_lite.js`: note display fields and save/watermark controls
+- `scripts/widgets_lite_v2.js`: related search, hotspots, activities, locations, music, collections, and fan-group cleanup
+- `scripts/search_ads_lite.js`: search-component cleanup
 
-Each response URL is routed to one functional script only, preventing multiple scripts from consuming the same response body.
+The Lite release avoids heavy comment, image, and private-message response rewriting. It also avoids recursive traversal of large video metadata objects.
 
 ### Notes and Disclaimer
 
