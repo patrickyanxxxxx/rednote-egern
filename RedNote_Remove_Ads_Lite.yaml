@@ -1,5 +1,5 @@
 name: "RedNote 去广告 Lite"
-description: "RedNote 国际版轻量去广告：保留明确广告拦截、首页/关注流和视频流广告过滤，绕过详情、评论、图片和私信响应改写。"
+description: "RedNote 国际版轻量去广告：保留广告过滤、视频快路径、组件净化、IP 属地及图片/视频无水印保存；绕过评论和私信的重型响应改写。"
 author: "Minis"
 homepage: "https://github.com/patrickyanxxxxx/rednote-egern"
 icon: "xmark.shield.fill"
@@ -53,21 +53,21 @@ scriptings:
   - http_response:
       name: "首页和关注流广告净化"
       match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)"
-      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads_lite.js"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads_lite_v2.js"
       body_required: true
       max_size: 8388608
       timeout: 10
   - http_response:
       name: "视频流广告净化"
       match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/videofeed(?:\\?|$)"
-      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/videofeed_ads_fast.js"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/videofeed_ads_fast_v2.js"
       body_required: true
       max_size: 8388608
       timeout: 10
   - http_response:
       name: "笔记展示字段和去水印"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/(?:detailfeed|feed)(?:\\?|$)"
-      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note_display_lite.js"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/(?:detailfeed|feed|imagefeed)(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note_display_lite_v2.js"
       body_required: true
       max_size: 4194304
       timeout: 10

@@ -1,8 +1,8 @@
 # RedNote Egern 去广告模块
 
-**最新发行版：v2026.09.16**
+**最新发行版：v2026.09.18**
 
-当前推荐组合：`RedNote_Remove_Ads_Lite.yaml` + 图片 CDN 直连规则。Lite 版保留去广告、视频快路径、组件净化、去水印和 IP 属地，避免对评论与图片响应做重型改写。
+当前推荐组合：`RedNote_Remove_Ads_Lite.yaml` + 图片 CDN 直连规则。Lite 版保留去广告、视频快路径、组件净化、去水印和 IP 属地，只对图片 `imagefeed` 做定向保存权限处理，并避免对评论与私信响应做重型改写。
 
 [中文](#中文说明) | [English](#english)
 
@@ -24,7 +24,7 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads.yaml
 ```
 
-当前发行版：`v2026.09.16`
+当前发行版：`v2026.09.18`
 
 ### 安装方法
 
@@ -60,13 +60,13 @@ https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rule
 ### 当前 Lite 版脚本结构
 
 - `RedNote_Remove_Ads_Lite.yaml`：推荐的轻量模块
-- `scripts/feed_ads_lite.js`：首页和关注流广告净化，保留帖子 IP 属地
-- `scripts/videofeed_ads_fast.js`：视频流顶层快路径，保留去水印和广告过滤
-- `scripts/note_display_lite.js`：笔记展示字段和保存/去水印处理
+- `scripts/feed_ads_lite_v2.js`：首页和关注流广告净化，恢复保存菜单并保留帖子 IP 属地
+- `scripts/videofeed_ads_fast_v2.js`：视频流顶层快路径，恢复下载入口、去水印和广告过滤
+- `scripts/note_display_lite_v2.js`：笔记详情与图片 `imagefeed` 保存/去水印处理
 - `scripts/widgets_lite_v2.js`：相关搜索、热点、活动、地点、音乐、合集和粉丝群组件净化
 - `scripts/search_ads_lite.js`：搜索广告组件净化
 
-Lite 版绕过评论、图片和私信的重型响应改写，避免刷一段时间后内容和评论请求失效。视频流只处理每条视频的顶层字段，减少切换视频时的额外响应处理。
+Lite 版绕过评论和私信的重型响应改写，只对图片 `imagefeed` 做定向保存/去水印处理，避免刷一段时间后内容和评论请求失效。视频流仍只处理每条视频的顶层字段，并补回下载入口。
 
 ### 注意事项与免责声明
 
@@ -95,9 +95,9 @@ Lite 版绕过评论、图片和私信的重型响应改写，避免刷一段时
 
 ## English
 
-**Latest release: `v2026.09.16`**
+**Latest release: `v2026.09.18`**
 
-The recommended release is the Lite module. It keeps ad cleanup, the shallow video-feed fast path, widget cleanup, watermark controls, and post IP-location fields while avoiding heavy comment and image response rewriting.
+The recommended release is the Lite module. It keeps ad cleanup, the shallow video-feed fast path, widget cleanup, watermark controls, and post IP-location fields. Image `imagefeed` responses receive targeted save/watermark handling, while heavy comment and private-message rewriting remains disabled.
 
 ### Remote Module URL
 
@@ -144,13 +144,13 @@ https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rule
 ### Lite Script Layout
 
 - `RedNote_Remove_Ads_Lite.yaml`: recommended Lite module
-- `scripts/feed_ads_lite.js`: home/follow-feed ad cleanup while preserving post IP locations
-- `scripts/videofeed_ads_fast.js`: shallow video-feed fast path with ad and watermark handling
-- `scripts/note_display_lite.js`: note display fields and save/watermark controls
+- `scripts/feed_ads_lite_v2.js`: home/follow-feed ad cleanup with restored save-menu entries and preserved post IP locations
+- `scripts/videofeed_ads_fast_v2.js`: shallow video-feed fast path with restored download entries, ad filtering, and watermark handling
+- `scripts/note_display_lite_v2.js`: note-detail and image `imagefeed` save/watermark handling
 - `scripts/widgets_lite_v2.js`: related search, hotspots, activities, locations, music, collections, and fan-group cleanup
 - `scripts/search_ads_lite.js`: search-component cleanup
 
-The Lite release avoids heavy comment, image, and private-message response rewriting. It also avoids recursive traversal of large video metadata objects.
+The Lite release avoids heavy comment and private-message response rewriting. It adds only targeted image `imagefeed` save/watermark handling and avoids recursive traversal of large video metadata objects.
 
 ### Notes and Disclaimer
 

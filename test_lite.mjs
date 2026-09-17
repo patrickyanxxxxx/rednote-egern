@@ -1,5 +1,5 @@
-import feed from './scripts/feed_ads_lite.js';
-import video from './scripts/videofeed_ads_fast.js';
+import feed from './scripts/feed_ads_lite_v2.js';
+import video from './scripts/videofeed_ads_fast_v2.js';
 import search from './scripts/search_ads_lite.js';
 const run = (fn, url, body) => fn({ request: { url }, response: { json: async () => structuredClone(body) } });
 const feedOut = await run(feed, 'https://rec.rnote.com/api/sns/v6/homefeed?', {
@@ -16,7 +16,9 @@ const videoOut = await run(video, 'https://rec.rnote.com/api/sns/v8/note/videofe
     id: 'ok', model_type: 'note', ip_location: '广东', related_searches: ['x'],
     music_info: { id: 1 }, poi_info: { name: 'place' },
     collection_info: { name: 'collection' },
-    media_save_config: { disable_save: true, disable_watermark: false }
+    media_save_config: { disable_save: true, disable_watermark: false },
+    function_switch: [{ type: 'video_download', enable: false, reason: '作者已关闭下载权限，无法保存' }],
+    share_info: { function_entries: [{ type: 'copy_link' }] }
   }, { id: 'ad', model_type: 'note', ads_info: {} }, { id: 'other', model_type: 'recommend_user' }]
 });
 if (videoOut.body.data.length !== 1 || videoOut.body.data[0].id !== 'ok') throw new Error('video');
@@ -24,6 +26,9 @@ const videoItem = videoOut.body.data[0];
 if (videoItem.related_searches || videoItem.music_info || videoItem.poi_info || videoItem.collection_info) throw new Error('video display fields');
 if (videoItem.ip_location !== '广东') throw new Error('ip location removed');
 if (videoItem.media_save_config.disable_save || !videoItem.media_save_config.disable_watermark) throw new Error('video watermark');
+const downloadSwitch = videoItem.function_switch.find(item => item.type === 'video_download');
+if (!downloadSwitch?.enable || downloadSwitch.reason) throw new Error('video download switch');
+if (!videoItem.share_info.function_entries.some(item => item.type === 'video_download')) throw new Error('video download entry');
 const searchOut = await run(search, 'https://search.rnote.com/api/sns/v4/search/trending?', {
   data: { queries: ['x'], hint_word: { text: 'x' } }
 });
