@@ -38,6 +38,16 @@ map_locals:
     headers:
       Content-Type: "application/json"
     body: "{}"
+  - match: "^https://(?:ci\\.)?(?:rnote|xiaohongshu)\\.com/system_config/watermark(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "image/gif"
+    body: ""
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v1/system(?:/|_)config/watermark(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "image/gif"
+    body: ""
   - match: "^https://(?:pages\\.)?(?:rnote|xiaohongshu)\\.com/data/native/matrix_switches(?:\\?|$)"
     status_code: 200
     headers:
@@ -87,11 +97,13 @@ mitm:
       - "edith.rnote.com"
       - "rec.rnote.com"
       - "www.rnote.com"
+      - "ci.rnote.com"
       - "so.rnote.com"
       - "lng.rnote.com"
       - "edith.xiaohongshu.com"
       - "rec.xiaohongshu.com"
       - "www.xiaohongshu.com"
+      - "ci.xiaohongshu.com"
       - "so.xiaohongshu.com"
       - "lng.xiaohongshu.com"
       - "pages.rnote.com"
