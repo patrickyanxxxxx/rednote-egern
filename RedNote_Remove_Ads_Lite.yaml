@@ -20,14 +20,36 @@ rules:
   - domain:
       match: "t-ads.xiaohongshu.com"
       policy: REJECT
+  - domain:
+      match: "ads-i2.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "ads-i3.xhscdn.com"
+      policy: REJECT
+  - domain:
+      match: "trace.rtbasia.com"
+      policy: REJECT
+  - domain:
+      match: "splash-online-decision.xiaohongshu.com"
+      policy: REJECT
   - url_regex:
-      match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/stateReport(?:\\?|$)"
+      match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/(?:stateReport|third/collect)(?:\\?|$)"
       policy: REJECT
   - url_regex:
       match: "^https?://(?:www\\.)?xhslink\\.com/o/"
       policy: REJECT
 
 map_locals:
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v2/system_service/splash_config(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: '{"code":0,"success":true,"msg":"成功","data":{"bidding_ads":[],"ads_groups":[],"per_day_max_show":0}}'
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v2/system_service/splash_(?:async_optimization|online_decision)(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: '{"code":0,"success":true,"msg":"成功","data":{"track_url":"","ads_id":"-1","track_id":"","request_id":""}}'
   - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v1/surprisebox/(?:get_style|open|submit_action)|marketing/box/trigger)(?:\\?|$)"
     status_code: 200
     headers:
@@ -61,8 +83,8 @@ map_locals:
 
 scriptings:
   - http_response:
-      name: "消息页可能认识的人过滤"
-      match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v1/im/get_recent_chats(?:\\?|$)"
+      name: "消息页推荐与推广净化"
+      match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v1/im/get_recent_chats|sns/v\\d+/message/detect)(?:\\?|$)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/message_recent_chats_filter.js"
       body_required: true
       max_size: 1048576

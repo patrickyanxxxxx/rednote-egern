@@ -13,6 +13,15 @@ const REMOVE_BIZ_TYPES = new Set([
 
 const REMOVE_TEXT = ["猜你想搜", "加入粉丝群"];
 
+const REMOVE_KEYS = new Set([
+  "ads_goods_cards",
+  "ads_comment_component",
+  "ads_engage_bar",
+  "pgy_comment_component",
+  "pgy_engage_bar",
+  "cooperate_engage_bar"
+]);
+
 function isObject(value) {
   return value !== null && typeof value === "object";
 }
@@ -49,10 +58,13 @@ function clean(node, depth = 0) {
 
   for (const key of Object.keys(node)) {
     const value = node[key];
-    if (isRemovable(value)) {
+    if (REMOVE_KEYS.has(key) || (key === "second_jump_bar" && value?.type === "ads")) {
+      delete node[key];
+    } else if (isRemovable(value)) {
       delete node[key];
     } else if (Array.isArray(value)) {
-      clean(value, depth + 1);
+      node[key] = value.filter(item => !REMOVE_KEYS.has(item));
+      clean(node[key], depth + 1);
     } else if (isObject(value)) {
       clean(value, depth + 1);
     }
