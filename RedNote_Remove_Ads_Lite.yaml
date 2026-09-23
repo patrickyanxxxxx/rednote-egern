@@ -35,9 +35,6 @@ rules:
   - url_regex:
       match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/(?:stateReport|third/collect)(?:\\?|$)"
       policy: REJECT
-  - url_regex:
-      match: "^https?://(?:www\\.)?xhslink\\.com/o/"
-      policy: REJECT
 
 map_locals:
   - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v2/system_service/splash_config(?:\\?|$)"
