@@ -61,6 +61,13 @@ map_locals:
 
 scriptings:
   - http_response:
+      name: "消息页可能认识的人过滤"
+      match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v1/im/get_recent_chats(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/message_recent_chats_filter.js"
+      body_required: true
+      max_size: 1048576
+      timeout: 5
+  - http_response:
       name: "首页和关注流广告净化"
       match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads_lite_v2.js"
