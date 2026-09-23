@@ -11,22 +11,11 @@ function clearPromotion(section) {
 
 export default async function(ctx) {
   const url = ctx.request?.url || "";
-  const recentChats = /\/api\/sns\/v1\/im\/get_recent_chats(?:\?|$)/.test(url);
-  const messageDetect = /\/api\/sns\/v\d+\/message\/detect(?:\?|$)/.test(url);
-  if (!recentChats && !messageDetect) return;
+  if (!/\/api\/sns\/v\d+\/message\/detect(?:\?|$)/.test(url)) return;
 
   try {
     const data = await ctx.response.json();
-    if (recentChats) {
-      const list = data?.data?.recent_chat_user;
-      if (Array.isArray(list)) {
-        data.data.recent_chat_user = list.filter(item => {
-          // source=algo is the message-page “可能认识的人” recommendation list.
-          return !(isObject(item) && item.source === "algo");
-        });
-      }
-    }
-    if (messageDetect && isObject(data?.data)) {
+    if (isObject(data?.data)) {
       clearPromotion(data.data.subNotificationCommercial);
       clearPromotion(data.data.subNotificationEvent);
     }
