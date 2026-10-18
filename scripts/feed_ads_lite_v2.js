@@ -72,27 +72,6 @@ function enableSaving(node) {
   }
 }
 
-function removeV8BackupUrls(node) {
-  if (!isObject(node)) return;
-  if (Array.isArray(node)) {
-    for (const item of node) removeV8BackupUrls(item);
-    return;
-  }
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "backup_urls" && Array.isArray(value)) {
-      node[key] = value.filter(url => {
-        try {
-          return new URL(url).hostname !== "sns-v8.rednotecdn.com";
-        } catch (_) {
-          return true;
-        }
-      });
-    } else if (isObject(value)) {
-      removeV8BackupUrls(value);
-    }
-  }
-}
-
 function cleanItem(node, depth = 0) {
   if (!isObject(node) || depth > 4) return;
   if (Array.isArray(node)) {
@@ -100,10 +79,7 @@ function cleanItem(node, depth = 0) {
     return;
   }
   enableSaving(node);
-  removeV8BackupUrls(node);
   for (const key of Object.keys(node)) {
-    // Playback metadata is not a display component; preserve it unchanged.
-    if (key === "video_info_v2" || key === "video_info") continue;
     if (REMOVE_KEYS.includes(key) || shouldRemoveDisplayKey(key)) {
       delete node[key];
     } else if (isObject(node[key])) {

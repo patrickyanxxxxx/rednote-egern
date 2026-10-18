@@ -53,31 +53,9 @@ function enableSaving(item) {
   }
 }
 
-function removeV8BackupUrls(node) {
-  if (!isObject(node)) return;
-  if (Array.isArray(node)) {
-    for (const item of node) removeV8BackupUrls(item);
-    return;
-  }
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "backup_urls" && Array.isArray(value)) {
-      node[key] = value.filter(url => {
-        try {
-          return new URL(url).hostname !== "sns-v8.rednotecdn.com";
-        } catch (_) {
-          return true;
-        }
-      });
-    } else if (isObject(value)) {
-      removeV8BackupUrls(value);
-    }
-  }
-}
-
 function cleanVideoItem(item) {
   if (!isObject(item)) return;
   enableSaving(item);
-  removeV8BackupUrls(item);
   for (const key of Object.keys(item)) {
     if (/^ip_location(?:_|$)/i.test(key)) continue;
     if (REMOVE_KEYS.has(key)) delete item[key];
