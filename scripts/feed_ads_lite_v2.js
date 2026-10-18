@@ -80,6 +80,8 @@ function cleanItem(node, depth = 0) {
   }
   enableSaving(node);
   for (const key of Object.keys(node)) {
+    // Playback metadata is not a display component; preserve it unchanged.
+    if (key === "video_info_v2" || key === "video_info") continue;
     if (REMOVE_KEYS.includes(key) || shouldRemoveDisplayKey(key)) {
       delete node[key];
     } else if (isObject(node[key])) {
