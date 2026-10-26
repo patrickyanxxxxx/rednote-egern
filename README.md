@@ -57,6 +57,17 @@ https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rule
 - 拦截 `xhslink.com/o/...` 类型的帖子分享短链
 - 同时兼容 RedNote `rnote.com` 和小红书 `xiaohongshu.com` 接口
 
+### 源码结构与构建
+
+脚本由 `src/` 生成，`scripts/` 与根目录的两份 YAML 都是产物，不要直接改：
+
+- `src/lib/`：共享块（类型判断、广告判定、字段清单、保存解锁、组件规则）
+- `src/handlers/`：每个接口一个 handler，用 `// @include lib/xxx.js` 声明依赖
+- `src/modules/common/`：两个模块共用的拦截规则与本地映射
+- `src/modules/{lite,full}.yaml`：模块差异部分，用 `# @include common/xxx.yaml` 引入公共块
+
+改完后执行 `node build.mjs` 重新生成。Egern 按 `script_url` 单文件加载、不支持 import，所以共享块必须展开成自包含脚本再发布。
+
 ### 当前 Lite 版脚本结构
 
 - `RedNote_Remove_Ads_Lite.yaml`：推荐的轻量模块

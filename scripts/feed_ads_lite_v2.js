@@ -1,24 +1,4 @@
-const AD_MODELS = new Set([
-  "ad", "ads", "advertisement", "commercial", "sponsor", "sponsored",
-  "promotion", "promoted_note", "brand_ad", "feed_ad", "native_ad"
-]);
-
-const REMOVE_KEYS = [
-  "related_ques", "related_questions", "related_search", "related_searches",
-  "related_queries", "related_query", "search_recommend", "recommend_search",
-  "music", "music_info", "music_info_v2", "note_music", "native_music",
-  "native_music_info", "music_track", "audio_info", "poi", "poi_info",
-  "poi_info_list", "location", "location_info", "place", "place_info",
-  "address_info", "geo_info", "collection", "collection_info",
-  "note_collection", "note_collection_info", "collect_info", "series",
-  "series_info", "album", "album_info"
-];
-
-const DISPLAY_KEY = /(?:related|recommend).*(?:search|question|query)|(?:search|question|query).*(?:related|recommend)|(?:^|_)(?:music|audio|poi|location|place|address|geo|collection|collect|series|album)(?:_|$)/i;
-
-function shouldRemoveDisplayKey(key) {
-  return !/^ip_location(?:_|$)/i.test(key) && DISPLAY_KEY.test(key);
-}
+// 本文件由 build.mjs 从 src/ 生成，请勿直接编辑。
 
 function isObject(value) {
   return value !== null && typeof value === "object";
@@ -27,6 +7,15 @@ function isObject(value) {
 function marked(value) {
   return value === true || value === 1 || value === "1" || value === "true";
 }
+
+function hasOwn(target, key) {
+  return Object.prototype.hasOwnProperty.call(target, key);
+}
+
+const AD_MODELS = new Set([
+  "ad", "ads", "advertisement", "commercial", "sponsor", "sponsored",
+  "promotion", "promoted_note", "brand_ad", "feed_ad", "native_ad"
+]);
 
 function isAd(item) {
   if (!isObject(item)) return false;
@@ -42,10 +31,32 @@ function isAd(item) {
 function isHomefeedPromotion(item) {
   if (!isObject(item)) return false;
   return item.model_type === "live_v2" ||
-    Object.prototype.hasOwnProperty.call(item, "ads_info") ||
-    Object.prototype.hasOwnProperty.call(item, "card_icon") ||
+    hasOwn(item, "ads_info") ||
+    hasOwn(item, "card_icon") ||
     (Array.isArray(item.note_attributes) && item.note_attributes.includes("goods")) ||
     item.has_related_goods === true;
+}
+
+// 信息流与视频流共用：展示类扩展字段
+const FEED_REMOVE_KEYS = new Set([
+  "related_ques", "related_questions", "related_search", "related_searches",
+  "related_queries", "related_query", "search_recommend", "recommend_search",
+  "music", "music_info", "music_info_v2", "note_music", "native_music",
+  "native_music_info", "music_track", "audio_info", "poi", "poi_info",
+  "poi_info_list", "location", "location_info", "place", "place_info",
+  "address_info", "geo_info", "collection", "collection_info",
+  "note_collection", "note_collection_info", "collect_info", "series",
+  "series_info", "album", "album_info"
+]);
+
+const DISPLAY_KEY = /(?:related|recommend).*(?:search|question|query)|(?:search|question|query).*(?:related|recommend)|(?:^|_)(?:music|audio|poi|location|place|address|geo|collection|collect|series|album)(?:_|$)/i;
+
+// 媒体描述字段不能当音乐/音频组件删掉，否则播放器拿不到编码参数
+const MEDIA_FIELD = /^(?:audio|video)_(?:codec|bitrate|duration|channels|sample_rate|profile|fps|frame_rate|width|height)$/i;
+
+function shouldRemoveDisplayKey(key) {
+  if (MEDIA_FIELD.test(key)) return false;
+  return !/^ip_location(?:_|$)/i.test(key) && DISPLAY_KEY.test(key);
 }
 
 function enableSaving(node) {
@@ -54,19 +65,21 @@ function enableSaving(node) {
     node.media_save_config.disable_watermark = true;
     node.media_save_config.disable_weibo_cover = true;
   }
+
   if (Array.isArray(node.function_switch)) {
-    for (const item of node.function_switch) {
-      if (item?.type === "image_download" || item?.type === "video_download") {
-        item.enable = true;
-        delete item.reason;
+    for (const entry of node.function_switch) {
+      if (entry?.type === "image_download" || entry?.type === "video_download") {
+        entry.enable = true;
+        delete entry.reason;
       }
     }
   }
+
   if (isObject(node.share_info)) {
     if (!Array.isArray(node.share_info.function_entries)) {
       node.share_info.function_entries = [];
     }
-    if (!node.share_info.function_entries.some(item => item?.type === "video_download")) {
+    if (!node.share_info.function_entries.some(entry => entry?.type === "video_download")) {
       node.share_info.function_entries.unshift({ type: "video_download" });
     }
   }
@@ -80,7 +93,7 @@ function cleanItem(node, depth = 0) {
   }
   enableSaving(node);
   for (const key of Object.keys(node)) {
-    if (REMOVE_KEYS.includes(key) || shouldRemoveDisplayKey(key)) {
+    if (FEED_REMOVE_KEYS.has(key) || shouldRemoveDisplayKey(key)) {
       delete node[key];
     } else if (isObject(node[key])) {
       cleanItem(node[key], depth + 1);
