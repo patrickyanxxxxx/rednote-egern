@@ -1,0 +1,74 @@
+name: "RedNote 去广告"
+description: "适配 RedNote 国际版 9.44：清理开屏、信息流、搜索推广和界面广告；兼容小红书国内接口。"
+author: "Minis"
+homepage: "https://github.com/patrickyanxxxxx/rednote-egern"
+icon: "xmark.shield.fill"
+
+rules:
+  # @include common/rules.yaml
+  - url_regex:
+      match: "^https://referee\\.(?:rnote|xiaohongshu)\\.com/v\\d+/stateReport(?:\\?|$)"
+      policy: REJECT
+  - url_regex:
+      match: "^https?://(?:www\\.)?xhslink\\.com/o/"
+      policy: REJECT
+
+map_locals:
+  # @include common/map_locals.yaml
+
+scriptings:
+  - http_response:
+      name: "信息流广告、相关搜索和音乐净化"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+  - http_response:
+      name: "搜索页净化"
+      match: "^https://(?:edith|so)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/search/"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/search.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+  - http_response:
+      name: "开屏和界面配置净化"
+      match: "^https://edith\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:system/(?:config|cold_start_config|migration_config)|system_service/(?:config|splash_config|splash_async_optimization)|note/widgets)(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/system.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+  - http_response:
+      name: "笔记和评论内容净化"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:note/(?:detailfeed(?:/preload)?(?:\\?|$)|feed(?:\\?|$)|imagefeed(?:\\?|$)|videofeed(?:\\?|$)|live_photo/save(?:\\?|$)|comment(?:/|\\?|$))|interaction/comment(?:/|\\?|$))"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note.js"
+      body_required: true
+      max_size: 8388608
+      timeout: 10
+  - http_response:
+      name: "私信页推荐用户净化"
+      match: "^https://(?:edith|lng|www)\\.(?:rnote|xiaohongshu)\\.com/api/(?:sns/v\\d+/im/get_recent_chats|im/v\\d+/chats|sns/v\\d+/message)(?:\\?|$)"
+      script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/messages.js"
+      body_required: true
+      max_size: 4194304
+      timeout: 10
+
+mitm:
+  hostnames:
+    includes:
+      - "edith.rnote.com"
+      - "rec.rnote.com"
+      - "www.rnote.com"
+      - "ci.rnote.com"
+      - "so.rnote.com"
+      - "lng.rnote.com"
+      - "edith.xiaohongshu.com"
+      - "rec.xiaohongshu.com"
+      - "www.xiaohongshu.com"
+      - "ci.xiaohongshu.com"
+      - "so.xiaohongshu.com"
+      - "lng.xiaohongshu.com"
+      - "pages.rnote.com"
+      - "pages.xiaohongshu.com"
+      - "referee.rnote.com"
+      - "referee.xiaohongshu.com"

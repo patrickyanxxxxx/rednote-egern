@@ -1,3 +1,17 @@
+// 本文件由 build.mjs 从 src/ 生成，请勿直接编辑。
+
+function isObject(value) {
+  return value !== null && typeof value === "object";
+}
+
+function marked(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+function hasOwn(target, key) {
+  return Object.prototype.hasOwnProperty.call(target, key);
+}
+
 const REMOVE_BIZ_TYPES = new Set([
   "nbb_strategy_related_search",
   "nbb_related_hotspot",
@@ -13,7 +27,7 @@ const REMOVE_BIZ_TYPES = new Set([
 
 const REMOVE_TEXT = ["猜你想搜", "加入粉丝群"];
 
-const REMOVE_KEYS = new Set([
+const WIDGET_REMOVE_KEYS = new Set([
   "ads_goods_cards",
   "ads_comment_component",
   "ads_engage_bar",
@@ -21,10 +35,6 @@ const REMOVE_KEYS = new Set([
   "pgy_engage_bar",
   "cooperate_engage_bar"
 ]);
-
-function isObject(value) {
-  return value !== null && typeof value === "object";
-}
 
 function hasRemoveText(value) {
   if (!isObject(value) || Array.isArray(value)) return false;
@@ -58,12 +68,12 @@ function clean(node, depth = 0) {
 
   for (const key of Object.keys(node)) {
     const value = node[key];
-    if (REMOVE_KEYS.has(key) || (key === "second_jump_bar" && value?.type === "ads")) {
+    if (WIDGET_REMOVE_KEYS.has(key) || (key === "second_jump_bar" && value?.type === "ads")) {
       delete node[key];
     } else if (isRemovable(value)) {
       delete node[key];
     } else if (Array.isArray(value)) {
-      node[key] = value.filter(item => !REMOVE_KEYS.has(item));
+      node[key] = value.filter(item => !WIDGET_REMOVE_KEYS.has(item));
       clean(node[key], depth + 1);
     } else if (isObject(value)) {
       clean(value, depth + 1);

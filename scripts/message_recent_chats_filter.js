@@ -1,5 +1,15 @@
+// 本文件由 build.mjs 从 src/ 生成，请勿直接编辑。
+
 function isObject(value) {
   return value !== null && typeof value === "object";
+}
+
+function marked(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+function hasOwn(target, key) {
+  return Object.prototype.hasOwnProperty.call(target, key);
 }
 
 function clearPromotion(section) {
