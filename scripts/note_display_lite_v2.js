@@ -1,4 +1,19 @@
-const REMOVE_KEYS = new Set([
+// 本文件由 build.mjs 从 src/ 生成，请勿直接编辑。
+
+function isObject(value) {
+  return value !== null && typeof value === "object";
+}
+
+function marked(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+function hasOwn(target, key) {
+  return Object.prototype.hasOwnProperty.call(target, key);
+}
+
+// 笔记详情：比信息流多一批字段，不能与上面合并
+const NOTE_REMOVE_KEYS = new Set([
   "related_ques", "related_questions", "related_search", "related_searches",
   "related_queries", "related_query", "search_recommend", "search_recommendations",
   "recommend_search", "recommend_searches", "music", "music_info",
@@ -9,10 +24,6 @@ const REMOVE_KEYS = new Set([
   "collection_info", "note_collection", "note_collection_info", "collection",
   "series_info", "series", "album_info", "album"
 ]);
-
-function isObject(value) {
-  return value !== null && typeof value === "object";
-}
 
 function enableSaving(node) {
   if (isObject(node.media_save_config)) {
@@ -49,7 +60,7 @@ function clean(node, depth) {
 
   enableSaving(node);
   for (const key of Object.keys(node)) {
-    if (REMOVE_KEYS.has(key)) {
+    if (NOTE_REMOVE_KEYS.has(key)) {
       delete node[key];
     } else if (isObject(node[key])) {
       clean(node[key], depth + 1);
