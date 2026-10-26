@@ -1,3 +1,17 @@
+// 本文件由 build.mjs 从 src/ 生成，请勿直接编辑。
+
+function isObject(value) {
+  return value !== null && typeof value === "object";
+}
+
+function marked(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+function hasOwn(target, key) {
+  return Object.prototype.hasOwnProperty.call(target, key);
+}
+
 const RECOMMEND_TYPES = new Set([
   "recommend_user", "recommended_user", "user_recommend", "user_recommendation",
   "interest_user", "people_you_may_know", "suggested_user", "suggested_users"
@@ -7,10 +21,6 @@ const RECOMMEND_KEYS = new Set([
   "recommend_users", "recommended_users", "user_recommendations", "interest_users",
   "people_you_may_know", "suggested_users", "may_interest_users"
 ]);
-
-function isObject(value) {
-  return value !== null && typeof value === "object";
-}
 
 function normalized(value) {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
