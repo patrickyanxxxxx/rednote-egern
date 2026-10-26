@@ -1,14 +1,16 @@
 # RedNote Egern 去广告模块
 
-**最新发行版：v2026.09.18**
+**最新发行版：v2026.10.27**
 
-当前推荐组合：`RedNote_Remove_Ads_Lite.yaml` + 图片 CDN 直连规则。Lite 版保留去广告、视频快路径、组件净化、去水印和 IP 属地，只对图片 `imagefeed` 做定向保存权限处理，并避免对评论与私信响应做重型改写。
+当前推荐组合：`RedNote_Remove_Ads_Lite.yaml` + 图片 CDN 直连规则。Lite 版保留去广告、视频快路径、组件净化、去水印和 IP 属地，只对图片 `imagefeed` 做定向保存权限处理，并避免对评论与私信响应做重型改写。本版修复媒体音频字段误删、搜索热榜层级错误，并收窄大响应匹配范围。
+
+两份模块的覆盖差异、接口清单和构建方式见 [模块详细说明](MODULE_README.md)。
 
 [中文](#中文说明) | [English](#english)
 
 ## 中文说明
 
-适用于 Egern 的 RedNote（小红书国际版）去广告与界面净化模块。模块依据 RedNote 9.44 网络元数据，并结合多个公开小红书去广告项目的接口与源码进行适配。
+适用于 Egern 的 RedNote（小红书国际版）去广告与界面净化模块。模块依据 RedNote 9.52 网络元数据，并结合多个公开小红书去广告项目的接口与源码进行适配。
 
 ### 远程模块地址
 
@@ -24,7 +26,7 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Remove_Ads.yaml
 ```
 
-当前发行版：`v2026.09.18`
+当前发行版：`v2026.10.27`
 
 ### 安装方法
 
@@ -56,6 +58,17 @@ https://raw.githubusercontent.com/patrickyanxxxxx/xiaohongshu-rednote-egern-rule
 - 拦截独立广告媒体域名和广告上报接口
 - 拦截 `xhslink.com/o/...` 类型的帖子分享短链
 - 同时兼容 RedNote `rnote.com` 和小红书 `xiaohongshu.com` 接口
+
+### 源码结构与构建
+
+脚本由 `src/` 生成，`scripts/` 与根目录的两份 YAML 都是产物，不要直接改：
+
+- `src/lib/`：共享块（类型判断、广告判定、字段清单、保存解锁、组件规则）
+- `src/handlers/`：每个接口一个 handler，用 `// @include lib/xxx.js` 声明依赖
+- `src/modules/common/`：两个模块共用的拦截规则与本地映射
+- `src/modules/{lite,full}.yaml`：模块差异部分，用 `# @include common/xxx.yaml` 引入公共块
+
+改完后执行 `node build.mjs` 重新生成。Egern 按 `script_url` 单文件加载、不支持 import，所以共享块必须展开成自包含脚本再发布。
 
 ### 当前 Lite 版脚本结构
 
@@ -95,9 +108,11 @@ Lite 版绕过评论和私信的重型响应改写，只对图片 `imagefeed` �
 
 ## English
 
-**Latest release: `v2026.09.18`**
+**Latest release: `v2026.10.27`**
 
-The recommended release is the Lite module. It keeps ad cleanup, the shallow video-feed fast path, widget cleanup, watermark controls, and post IP-location fields. Image `imagefeed` responses receive targeted save/watermark handling, while heavy comment and private-message rewriting remains disabled.
+The recommended release is the Lite module. It keeps ad cleanup, the shallow video-feed fast path, widget cleanup, watermark controls, and post IP-location fields. This release preserves media audio fields, fixes the real trending-response nesting, and narrows broad response matching. Image `imagefeed` responses receive targeted save/watermark handling, while heavy comment and private-message rewriting remains disabled.
+
+See [MODULE_README.md](MODULE_README.md) for the Lite/full comparison, endpoint coverage, update procedure, and build layout.
 
 ### Remote Module URL
 
