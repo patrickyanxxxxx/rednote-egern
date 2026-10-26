@@ -48,6 +48,7 @@ https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/RedNote_Rem
 | 笔记展示 | `note/detailfeed`、`note/detailfeed/preload`、`note/feed`、`note/imagefeed` | 去除相关组件并调整保存/去水印权限 |
 | 组件 | `note/widgets` | 删除相关搜索、活动、地点、音乐、合集和粉丝群组件 |
 | 搜索 | `/search/` 下的搜索结果、横幅、热榜、提示、趋势接口 | 删除广告结果、横幅、趋势词和相关推荐 |
+| 评论图片 | `/note/comment/list`、`/note/comment/sub_comments` | 只改写 `pictures[].url` / `origin_url` 为评论图原链，不递归改写整条评论 |
 
 Lite 的 feed 匹配带有路径结束锚点，因此不会处理 `homefeed/categories` 或 `homefeed/client_downgrade/report`。搜索模块也不会处理无关的搜索子接口。
 

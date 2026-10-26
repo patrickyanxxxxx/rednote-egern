@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 // @include lib/keys-note.js
 // @include lib/save.js
 
@@ -23,6 +24,7 @@ export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     clean(data, 0);
+    logLite("笔记展示字段和去水印", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;

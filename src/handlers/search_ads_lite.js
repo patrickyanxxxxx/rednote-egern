@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 
 export default async function(ctx) {
   try {
@@ -20,6 +21,7 @@ export default async function(ctx) {
     } else if (/\/search\/hint(?:\?|$)/.test(url) && isObject(data?.data)) {
       data.data.hint_words = [];
     }
+    logLite("搜索广告组件净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

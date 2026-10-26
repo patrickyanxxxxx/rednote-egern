@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 // 笔记详情：比信息流多一批字段，不能与上面合并
 const NOTE_REMOVE_KEYS = new Set([
   "related_ques", "related_questions", "related_search", "related_searches",
@@ -72,6 +78,7 @@ export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     clean(data, 0);
+    logLite("笔记展示字段和去水印", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;

@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 // @include lib/ads.js
 // @include lib/keys-feed.js
 // @include lib/save.js
@@ -51,6 +52,7 @@ export default async function(ctx) {
     } else if (/\/recommend\/user\/follow_recommend(?:\?|$)/.test(url) && Array.isArray(data?.data?.rec_users)) {
       data.data.rec_users = [];
     }
+    logLite("首页和关注流广告净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 const AD_MODELS = new Set([
   "ad", "ads", "advertisement", "commercial", "sponsor", "sponsored",
   "promotion", "promoted_note", "brand_ad", "feed_ad", "native_ad"
@@ -133,6 +139,7 @@ export default async function(ctx) {
     } else if (/\/recommend\/user\/follow_recommend(?:\?|$)/.test(url) && Array.isArray(data?.data?.rec_users)) {
       data.data.rec_users = [];
     }
+    logLite("首页和关注流广告净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

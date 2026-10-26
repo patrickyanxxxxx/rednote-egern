@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 const REMOVE_BIZ_TYPES = new Set([
   "nbb_strategy_related_search",
   "nbb_related_hotspot",
@@ -85,6 +91,7 @@ export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     clean(data);
+    logLite("笔记组件净化", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;

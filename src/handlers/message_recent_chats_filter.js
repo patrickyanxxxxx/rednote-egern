@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 
 function clearPromotion(section) {
   if (!isObject(section)) return;
@@ -17,6 +18,7 @@ export default async function(ctx) {
       clearPromotion(data.data.subNotificationCommercial);
       clearPromotion(data.data.subNotificationEvent);
     }
+    logLite("消息页推广净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

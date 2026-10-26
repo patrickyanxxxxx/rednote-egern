@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 function isVideoPromotion(item) {
   if (!isObject(item)) return true;
   if (item.model_type !== "note") return true;
@@ -97,6 +103,7 @@ export default async function(ctx) {
       data.data = data.data.filter(item => !isVideoPromotion(item));
       for (const item of data.data) cleanVideoItem(item);
     }
+    logLite("视频流广告净化", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;

@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 export default async function(ctx) {
   try {
     const data = await ctx.response.json();
@@ -32,6 +38,7 @@ export default async function(ctx) {
     } else if (/\/search\/hint(?:\?|$)/.test(url) && isObject(data?.data)) {
       data.data.hint_words = [];
     }
+    logLite("搜索广告组件净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

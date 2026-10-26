@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 // @include lib/ads-video.js
 // @include lib/keys-feed.js
 // @include lib/save.js
@@ -19,6 +20,7 @@ export default async function(ctx) {
       data.data = data.data.filter(item => !isVideoPromotion(item));
       for (const item of data.data) cleanVideoItem(item);
     }
+    logLite("视频流广告净化", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;

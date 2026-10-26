@@ -12,6 +12,12 @@ function hasOwn(target, key) {
   return Object.prototype.hasOwnProperty.call(target, key);
 }
 
+function logLite(name, detail) {
+  try {
+    console.log("[RedNote Lite] " + name + " " + detail);
+  } catch (_) {}
+}
+
 function clearPromotion(section) {
   if (!isObject(section)) return;
   section.count = 0;
@@ -29,6 +35,7 @@ export default async function(ctx) {
       clearPromotion(data.data.subNotificationCommercial);
       clearPromotion(data.data.subNotificationEvent);
     }
+    logLite("消息页推广净化", url.split("?")[0] || url);
     return { body: data };
   } catch (_) {
     return;

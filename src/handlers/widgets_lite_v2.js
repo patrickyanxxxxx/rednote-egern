@@ -1,4 +1,5 @@
 // @include lib/dom.js
+// @include lib/log.js
 // @include lib/widgets.js
 
 function clean(node, depth = 0) {
@@ -33,6 +34,7 @@ export default async function(ctx) {
   try {
     const data = await ctx.response.json();
     clean(data);
+    logLite("笔记组件净化", (ctx.request?.url || "").split("?")[0]);
     return { body: data };
   } catch (_) {
     return;
