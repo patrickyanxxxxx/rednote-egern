@@ -18,6 +18,9 @@ rules:
       match: "ads-video-qc.xhscdn.com"
       policy: REJECT
   - domain:
+      match: "ads-img-bak.xhscdn.com"
+      policy: REJECT
+  - domain:
       match: "t-ads.xiaohongshu.com"
       policy: REJECT
   - domain:
@@ -77,6 +80,11 @@ map_locals:
     headers:
       Content-Type: "application/json"
     body: "{}"
+  - match: "^https://(?:edith|www)\\.(?:rnote|xiaohongshu)\\.com/api/im/v\\d+/get_banner_list(?:\\?|$)"
+    status_code: 200
+    headers:
+      Content-Type: "application/json"
+    body: '{"code":0,"success":true,"msg":"成功","data":{"banner_info_list":[]}}'
 
 scriptings:
   - http_response:
@@ -88,7 +96,7 @@ scriptings:
       timeout: 5
   - http_response:
       name: "首页和关注流广告净化"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/(?:homefeed|followfeed|user/followings/followfeed|recommend/user/follow_recommend)(?:\\?|$)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/feed_ads_lite_v2.js"
       body_required: true
       max_size: 8388608
@@ -102,7 +110,7 @@ scriptings:
       timeout: 10
   - http_response:
       name: "笔记展示字段和去水印"
-      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/(?:detailfeed|feed|imagefeed)(?:\\?|$)"
+      match: "^https://(?:edith|rec|www)\\.(?:rnote|xiaohongshu)\\.com/api/sns/v\\d+/note/(?:detailfeed(?:/preload)?|feed|imagefeed)(?:\\?|$)"
       script_url: "https://raw.githubusercontent.com/patrickyanxxxxx/rednote-egern/main/scripts/note_display_lite_v2.js"
       body_required: true
       max_size: 4194304

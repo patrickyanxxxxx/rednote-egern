@@ -1,0 +1,40 @@
+const REMOVE_BIZ_TYPES = new Set([
+  "nbb_strategy_related_search",
+  "nbb_related_hotspot",
+  "note_activity_component",
+  "ndb_poi",
+  "poi",
+  "ugc_buyable_poi",
+  "ndb_sound",
+  "ndb_music",
+  "note_collection",
+  "ndb_group_chat"
+]);
+
+const REMOVE_TEXT = ["猜你想搜", "加入粉丝群"];
+
+const WIDGET_REMOVE_KEYS = new Set([
+  "ads_goods_cards",
+  "ads_comment_component",
+  "ads_engage_bar",
+  "pgy_comment_component",
+  "pgy_engage_bar",
+  "cooperate_engage_bar"
+]);
+
+function hasRemoveText(value) {
+  if (!isObject(value) || Array.isArray(value)) return false;
+  const model = isObject(value.model) ? value.model : {};
+  const fields = [
+    value.title, value.name, value.text, value.label, value.sub_title,
+    model.title, model.name, model.text, model.label, model.sub_title
+  ];
+  return fields.some(field =>
+    typeof field === "string" && REMOVE_TEXT.some(text => field.includes(text))
+  );
+}
+
+function isRemovable(value) {
+  return isObject(value) &&
+    (REMOVE_BIZ_TYPES.has(value.biz_type) || hasRemoveText(value));
+}
